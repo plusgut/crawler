@@ -16,6 +16,7 @@
     "url": "https://github.com/plusgut/crawler/issues"
   },
   "dependencies": {
-    "jsdom": "^8.0.2"
+    "jsdom": "^8.0.2",
+    "request": "^2.69.0"
   }
 }

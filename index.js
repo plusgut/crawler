@@ -1,4 +1,7 @@
 #! /usr/bin/env node
+var request = require('request');
+var jsdom   = require('jsdom');
+var url     = require('url');
 
 var serious =  {
 	crawler: {
@@ -10,11 +13,20 @@ var serious =  {
 			this.request(opt);
 		},
 		request: function(opt) {
-			// console.log(this.header);
+			request(opt.url.href, function (error, response, body) {
+				if (!error && response.statusCode == 200) {
+					jsdom.env(body, serious.scraper.includes, serious.scraper.response);
+				} else {
+					console.error(opt.url.href + ' Failed');
+				}
+			});
 		}
 	},
 	scraper: {
-
+		includes: [],
+		response: function(err, window) {
+			console.log(window.document.links);
+		}
 	},
 	module: {
 		load: function(host) {
@@ -23,7 +35,7 @@ var serious =  {
 	},
 	process: {
 		parse: function(args) {
-			var url = null;
+			var result = null;
 			var key = null;
 			var opt = {};
 			for(var i = 2; i < process.argv.length; i++) {
@@ -35,15 +47,15 @@ var serious =  {
 					opt[key] = para; // @TODO implement --header.cookie
 					key = null;
 				} else {
-					if(url) throw 'There was already an url set ' + url;
-					url = para;
+					if(result) throw 'There was already an url set ' + url;
+					result = url.parse(para);
 				}
 			}
 
 			if(key) {
 				throw 'There was no value set for ' + key;
 			}
-			return {url: url, opt: opt};
+			return {url: result, opt: opt};
 		}
 	}
 };

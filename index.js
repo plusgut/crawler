@@ -5,27 +5,43 @@ var url     = require('url');
 
 var serious =  {
 	crawler: {
-		queue: [],
+		current: 0,
+		queue:   [],
+		context: [],
 		init: function(opt) {
 			console.log(opt);
 			var host = '';
 			serious.module.load(host);
+			this.addRequest(opt.url.href, 'index');
 			this.request(opt);
 		},
 		request: function(opt) {
+			var self = this;
+			var current = self.current;
 			request(opt.url.href, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					jsdom.env(body, serious.scraper.includes, serious.scraper.response);
+					// added index to scraper call
+					var cb = serious.scraper.response.bind(serious.scraper, current);
+					jsdom.env(body, serious.scraper.includes, cb);
 				} else {
 					console.error(opt.url.href + ' Failed');
 				}
 			});
+			self.current++;
+		},
+		addRequest: function(url, context) {
+			if(this.queue.indexOf(url) === -1) {
+				this.queue.push(url);
+				this.context.push(context);
+			} else {
+				console.log('The url was already in the system ' + url);
+			}
 		}
 	},
 	scraper: {
 		includes: [],
-		response: function(err, window) {
-			console.log(window.document.links);
+		response: function(index, err, window) {
+			console.log(index, window.document.links);
 		}
 	},
 	module: {

@@ -3,15 +3,14 @@
 var serious =  {
 	crawler: {
 		queue: [],
-		header: {},
-		init: function(url) {
-			console.log(url);
+		init: function(opt) {
+			console.log(opt);
 			var host = '';
 			serious.module.load(host);
-			this.request(url);
+			this.request(opt);
 		},
-		request: function() {
-			console.log(this.header);
+		request: function(opt) {
+			// console.log(this.header);
 		}
 	},
 	scraper: {
@@ -24,15 +23,16 @@ var serious =  {
 	},
 	process: {
 		parse: function(args) {
-			var url  = null;
+			var url = null;
 			var key = null;
+			var opt = {};
 			for(var i = 2; i < process.argv.length; i++) {
 				var para = process.argv[i];
 				if(para.indexOf('--') === 0) {
 					if(key) throw key + ' had no corresponding value';
 					key = para.slice(2, para.length);
 				} else if(key) {
-					serious.crawler.header[key] = para;
+					opt[key] = para; // @TODO implement --header.cookie
 					key = null;
 				} else {
 					if(url) throw 'There was already an url set ' + url;
@@ -43,7 +43,7 @@ var serious =  {
 			if(key) {
 				throw 'There was no value set for ' + key;
 			}
-			return url;
+			return {url: url, opt: opt};
 		}
 	}
 };

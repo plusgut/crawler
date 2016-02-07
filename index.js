@@ -73,7 +73,6 @@ var serious =  {
 				var file = fs.readFileSync(path, 'utf8');
 				return file;
 			} catch(err){
-				console.log(err);
 				return false;
 			}
 		},
@@ -82,8 +81,6 @@ var serious =  {
 			var pathParts = url.path.split(delimiter);
 			var fileName  = pathParts.pop();
 			var path = this.prefix + delimiter + url.host + delimiter + pathParts.join(delimiter);
-			console.log('SAVE', path);
-			console.log(fileName);
 			mkdirp(path, function(err) {
 				fs.writeFile(path + delimiter + fileName, body, function(err) {
 					if (err) {

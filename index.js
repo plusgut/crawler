@@ -165,11 +165,7 @@ var serious =  {
 			var fileName  = pathParts.pop();
 			var path = prefix + delimiter + url.host + delimiter + pathParts.join(delimiter);
 			mkdirp(path, function(err) {
-				fs.writeFile(path + delimiter + fileName, body, function(err) {
-					if (err) {
-						console.error(err);
-					}
-				});
+				fs.writeFileSync(path + delimiter + fileName, body);
 			});
 		}
 	},

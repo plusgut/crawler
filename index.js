@@ -4,6 +4,7 @@ var fs        = require('fs');
 var mkdirp    = require('mkdirp');
 var jsdom     = require('jsdom');
 var urlParser = require('url');
+var lodash    = require('lodash');
 
 var serious =  {
 	////-----------------------------------------------------------------------------------------
@@ -21,8 +22,7 @@ var serious =  {
 		////-----------------------------------------------------------------------------------------
 		// Sets up the initial request and overwrites functions from the module depending of host
 		init: function(opt) {
-			var host = '';
-			serious.module.load(host);
+			serious.module.load(opt.url.host);
 			this.addRequest(opt.url.href, 'index');
 			this.request(opt);
 		},
@@ -85,7 +85,12 @@ var serious =  {
 		////-----------------------------------------------------------------------------------------
 		// overwrites the module, depending on the host
 		load: function(host) {
-
+			try {
+				var mod = require('./modules/' + host);
+				lodash.merge(serious, mod);
+			} catch(err) {
+				console.warn('Could not load a module for ' + host, err);
+			}
 		}
 	},
 	////-----------------------------------------------------------------------------------------

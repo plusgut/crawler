@@ -41,7 +41,7 @@ var serious =  {
 			var self    = this;
 			var current = self.current;
 			var url     = urlParser.parse(this.queue[current]);
-			var cb      = serious.scraper.response.bind(serious.scraper, current, url.protocol, url.host);
+			var cb      = serious.scraper.response.bind(serious.scraper, current, url);
 			var cache = serious.cache.get(url);
 			if(cache === false) {
 				request(url.href, function (error, response, body) {
@@ -92,7 +92,7 @@ var serious =  {
 		data: {},
 		////-----------------------------------------------------------------------------------------
 		// main function for scraping the relevant informations
-		response: function(index, protocol, host, err, window) {
+		response: function(index, url, err, window) {
 			console.log(index, window.document.links.length, window.document.getElementsByTagName('li').length);
 
 		},

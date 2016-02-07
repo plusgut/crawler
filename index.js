@@ -23,6 +23,10 @@ var serious =  {
 		// whats the first index to use
 		startContext: 'index',
 		////-----------------------------------------------------------------------------------------
+		// custom headers
+		headers: {
+		},
+		////-----------------------------------------------------------------------------------------
 		// Sets up the initial request and overwrites functions from the module depending of host
 		init: function(opt) {
 			this.host = opt.url.host;
@@ -44,7 +48,11 @@ var serious =  {
 			var cb      = serious.scraper.response.bind(serious.scraper, current, url);
 			var cache = serious.cache.get(url);
 			if(cache === false) {
-				request(url.href, function (error, response, body) {
+				var opt = {
+					url: url.href,
+					headers: this.headers
+				};
+				request(opt, function (error, response, body) {
 					console.log('Loading: ' + url.href);
 					if (!error && response.statusCode == 200) {
 						// added index to scraper call
@@ -52,7 +60,7 @@ var serious =  {
 						jsdom.env(body, serious.scraper.includes, cb);
 					} else {
 						if(!response) response = {};
-						console.error(url.href + ' Failed', error, response.statusCode);
+						console.error(url.href + ' Failed', error, response.statusCode, body);
 					}
 				});
 			} else {
@@ -104,8 +112,8 @@ var serious =  {
 		},
 		////-----------------------------------------------------------------------------------------
 		// saves scraper data
-		save: function(filename, data) {
-			serious.cache.set(fileName, data, this.prefix);
+		save: function(opt, data) {
+			serious.cache.set(opt, data, this.prefix);
 		}
 	},
 	module: {

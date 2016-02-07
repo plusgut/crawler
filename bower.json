@@ -1,0 +1,21 @@
+{
+  "name": "crawler",
+  "description": "a crawler and or scraper based on jsdom, with dynamic module loader depending on crawled host",
+  "main": "index.js",
+  "authors": [
+    "Carlo Jeske"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/plusgut/crawler",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.2.0"
+  }
+}

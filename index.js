@@ -20,27 +20,39 @@ var serious =  {
 		// says what type of url it is, but this is optional for some cases
 		context: [],
 		////-----------------------------------------------------------------------------------------
+		// whats the first index to use
+		startContext: 'index',
+		////-----------------------------------------------------------------------------------------
 		// Sets up the initial request and overwrites functions from the module depending of host
 		init: function(opt) {
+			this.host = opt.url.host;
 			serious.module.load(opt.url.host);
-			this.addRequest(opt.url.href, 'index');
-			this.request(opt);
+			this.addRequest(opt.url.href, this.startContext);
+			this.load();
+		},
+		load: function() {
+			while(this.current < this.queue.length) {
+				this.request();
+			}
 		},
 		////-----------------------------------------------------------------------------------------
 		// Handles requests, or takes the cached version
-		request: function(opt) {
-			var self = this;
+		request: function() {
+			var self    = this;
 			var current = self.current;
-			var cb = serious.scraper.response.bind(serious.scraper, current);
-			var cache = serious.cache.get(opt.url);
+			var url     = urlParser.parse(this.queue[current]);
+			var cb      = serious.scraper.response.bind(serious.scraper, current, url.protocol, url.host);
+			var cache = serious.cache.get(url);
 			if(cache === false) {
-				request(opt.url.href, function (error, response, body) {
+				request(url.href, function (error, response, body) {
+					console.log('Loading: ' + url.href);
 					if (!error && response.statusCode == 200) {
 						// added index to scraper call
-						serious.cache.set(opt.url, body);
+						serious.cache.set(url, body);
 						jsdom.env(body, serious.scraper.includes, cb);
 					} else {
-						console.error(opt.url.href + ' Failed', error, response.statusCode);
+						if(!response) response = {};
+						console.error(url.href + ' Failed', error, response.statusCode);
 					}
 				});
 			} else {
@@ -80,8 +92,9 @@ var serious =  {
 		data: {},
 		////-----------------------------------------------------------------------------------------
 		// main function for scraping the relevant informations
-		response: function(index, err, window) {
+		response: function(index, protocol, host, err, window) {
 			console.log(index, window.document.links.length, window.document.getElementsByTagName('li').length);
+
 		},
 		////-----------------------------------------------------------------------------------------
 		// When everything is crawled, this function gets triggered

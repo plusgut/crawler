@@ -76,18 +76,32 @@ var serious =  {
 		// external libraries like jquery can be added here
 		includes: [],
 		////-----------------------------------------------------------------------------------------
+		// the place where your scraper module should put data in
+		data: {},
+		////-----------------------------------------------------------------------------------------
 		// main function for scraping the relevant informations
 		response: function(index, err, window) {
 			console.log(index, window.document.links.length, window.document.getElementsByTagName('li').length);
+		},
+		////-----------------------------------------------------------------------------------------
+		// When everything is crawled, this function gets triggered
+		done: function() {
+			console.log(this.data);
 		}
 	},
 	module: {
+		////-----------------------------------------------------------------------------------------
+		// overwrites this function by your module
+		init: function(parent) {
+			throw 'Overwrite this function to get the scope of the parent';
+		},
 		////-----------------------------------------------------------------------------------------
 		// overwrites the module, depending on the host
 		load: function(host) {
 			try {
 				var mod = require('./modules/' + host);
 				lodash.merge(serious, mod);
+				serious.module.init(serious);
 			} catch(err) {
 				console.warn('Could not load a module for ' + host, err);
 			}

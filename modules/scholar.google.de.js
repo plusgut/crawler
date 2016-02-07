@@ -26,6 +26,11 @@ module.exports = {
 					var path = url.protocol + '//' + url.host + '/' + links[listIndex].href;
 					serious.crawler.addRequest(path, 'bookList');
 				}
+				var categories = window.jQuery('#gs_m_broad a');
+				for(var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+					var category = categories[categoryIndex];
+					serious.crawler.addRequest(url.protocol + '//' + url.host + '/' + category.href, 'publisherList');
+				}
 				serious.crawler.load();
 			} else if(type == 'bookList') {
 				var books = window.jQuery('tr:not(:first)');
@@ -46,6 +51,11 @@ module.exports = {
 					}, JSON.stringify(entity));
 					console.log(entity);
 				}
+				var windowLocation = 'window.location=';
+				var nextButton = window.jQuery('.gsc_pgn button:last').attr('onclick');
+				var nextPath = nextButton.slice(windowLocation.length, nextButton.length - 1);
+				serious.crawler.addRequest(nextPath, 'bookList');
+				serious.crawler.load();
 			}
 		}
 	},

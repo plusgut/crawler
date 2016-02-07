@@ -98,6 +98,8 @@ var serious =  {
 		////-----------------------------------------------------------------------------------------
 		// the place where your scraper module should put data in
 		data: {},
+		////-----------------------------------------------------------------------------------------
+		// prefix where scraper data should be saved
 		prefix: 'dist/scraper',
 		////-----------------------------------------------------------------------------------------
 		// main function for scraping the relevant informations

@@ -43,7 +43,7 @@ module.exports = {
 					this.save({
 						host: url.host,
 						path: query.cluster + '.json'
-					}, entity);
+					}, JSON.stringify(entity));
 					console.log(entity);
 				}
 			}

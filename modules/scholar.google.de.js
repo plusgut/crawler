@@ -1,3 +1,5 @@
+var urlParser = require('url');
+
 serious = null;
 
 module.exports = {
@@ -16,15 +18,19 @@ module.exports = {
 				}
 				serious.crawler.load();
 			} else if(type == 'bookList') {
-				console.log('BOOKLIST!');
 				var books = window.jQuery('tr:not(:first)');
 				for(var bookIndex = 0; bookIndex < books.length; bookIndex++) {
 					var book      = window.jQuery(books[bookIndex]);
+					var bookLink  = book.find('td.gs_title a').attr('href');
+					var query     = urlParser.parse(bookLink, true).query;
+
 					var entity = {
 						title:     book.find('td.gs_title a span').html(),
 						authors:   book.find('td.gs_title .gs_authors').html().split(', '),
 						publisher: book.find('td.gs_title .gs_pub').html()
 					};
+
+					this.save(query.cluster + '.json', entity);
 					console.log(entity);
 				}
 			}

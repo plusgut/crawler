@@ -90,6 +90,7 @@ var serious =  {
 		////-----------------------------------------------------------------------------------------
 		// the place where your scraper module should put data in
 		data: {},
+		prefix: 'dist/scraper',
 		////-----------------------------------------------------------------------------------------
 		// main function for scraping the relevant informations
 		response: function(index, url, err, window) {
@@ -100,6 +101,11 @@ var serious =  {
 		// When everything is crawled, this function gets triggered
 		done: function() {
 			console.log(this.data);
+		},
+		////-----------------------------------------------------------------------------------------
+		// saves scraper data
+		save: function(filename, data) {
+			serious.cache.set(fileName, data, this.prefix);
 		}
 	},
 	module: {
@@ -128,7 +134,7 @@ var serious =  {
 		delimiter: '/',
 		////-----------------------------------------------------------------------------------------
 		// where should the cached be saved in
-		prefix: 'cache/crawler',
+		prefix: 'dist/cache/crawler',
 		////-----------------------------------------------------------------------------------------
 		// checks if a request got cached, then it returns the body, else it returns false
 		get: function(url) {
@@ -142,11 +148,12 @@ var serious =  {
 		},
 		////-----------------------------------------------------------------------------------------
 		// saves a body to the cache
-		set: function(url, body) {
+		set: function(url, body, prefix) {
+			if(!prefix) prefix = this.prefix;
 			var delimiter = this.delimiter;
 			var pathParts = url.path.split(delimiter);
 			var fileName  = pathParts.pop();
-			var path = this.prefix + delimiter + url.host + delimiter + pathParts.join(delimiter);
+			var path = prefix + delimiter + url.host + delimiter + pathParts.join(delimiter);
 			mkdirp(path, function(err) {
 				fs.writeFile(path + delimiter + fileName, body, function(err) {
 					if (err) {
@@ -175,7 +182,7 @@ var serious =  {
 					key = null;
 				} else {
 					if(result) throw 'There was already an url set ' + url;
-					result = urlParser.parse(para);
+					result = urlParser.parse(para, true);
 				}
 			}
 
@@ -187,7 +194,7 @@ var serious =  {
 	}
 };
 
-var url = serious.process.parse(process.argv);
+var url = serious.process.parse(process.argv, true);
 
 if(url) {
 	serious.crawler.init(url);

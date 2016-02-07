@@ -6,16 +6,28 @@ var jsdom     = require('jsdom');
 var urlParser = require('url');
 
 var serious =  {
+	////-----------------------------------------------------------------------------------------
+	// crawls the link and searches for others, and saves those to the cache
 	crawler: {
+		////-----------------------------------------------------------------------------------------
+		// the index of the queue
 		current: 0,
+		////-----------------------------------------------------------------------------------------
+		// list of url-strings
 		queue:   [],
+		////-----------------------------------------------------------------------------------------
+		// says what type of url it is, but this is optional for some cases
 		context: [],
+		////-----------------------------------------------------------------------------------------
+		// Sets up the initial request and overwrites functions from the module depending of host
 		init: function(opt) {
 			var host = '';
 			serious.module.load(host);
 			this.addRequest(opt.url.href, 'index');
 			this.request(opt);
 		},
+		////-----------------------------------------------------------------------------------------
+		// Handles requests, or takes the cached version
 		request: function(opt) {
 			var self = this;
 			var current = self.current;
@@ -36,14 +48,18 @@ var serious =  {
 			}
 			self.current++;
 		},
+		////-----------------------------------------------------------------------------------------
+		// Checks if a url is already processed
 		addRequest: function(url, context) {
 			if(!this.isLoaded(url)) {
+				// @TODO add host check
 				this.queue.push(url);
 				this.context.push(context);
 			} else {
 				console.warn('The url was already in the system ' + url);
 			}
 		},
+		////-----------------------------------------------------------------------------------------
 		// Checks if url already got processed, does not check filesystem cache
 		isLoaded: function(url) {
 			if( this.queue.indexOf(url) === -1 ) {
@@ -53,20 +69,36 @@ var serious =  {
 			}
 		},
 	},
+	////-----------------------------------------------------------------------------------------
+	// parses data from the body
 	scraper: {
+		////-----------------------------------------------------------------------------------------
+		// external libraries like jquery can be added here
 		includes: [],
+		////-----------------------------------------------------------------------------------------
+		// main function for scraping the relevant informations
 		response: function(index, err, window) {
 			console.log(index, window.document.links.length, window.document.getElementsByTagName('li').length);
 		}
 	},
 	module: {
+		////-----------------------------------------------------------------------------------------
+		// overwrites the module, depending on the host
 		load: function(host) {
 
 		}
 	},
+	////-----------------------------------------------------------------------------------------
+	// handles the caching of the requests
 	cache: {
+		////-----------------------------------------------------------------------------------------
+		// delimiter
 		delimiter: '/',
+		////-----------------------------------------------------------------------------------------
+		// where should the cached be saved in
 		prefix: 'cache/crawler',
+		////-----------------------------------------------------------------------------------------
+		// checks if a request got cached, then it returns the body, else it returns false
 		get: function(url) {
 			try {
 				var path = this.prefix + this.delimiter + url.host + this.delimiter + url.path;
@@ -76,6 +108,8 @@ var serious =  {
 				return false;
 			}
 		},
+		////-----------------------------------------------------------------------------------------
+		// saves a body to the cache
 		set: function(url, body) {
 			var delimiter = this.delimiter;
 			var pathParts = url.path.split(delimiter);
@@ -90,7 +124,11 @@ var serious =  {
 			});
 		}
 	},
+	////-----------------------------------------------------------------------------------------
+	// helper function for cli interface
 	process: {
+		////-----------------------------------------------------------------------------------------
+		// parses the command line interface
 		parse: function(args) {
 			var result = null;
 			var key = null;
@@ -123,4 +161,5 @@ if(url) {
 	serious.crawler.init(url);
 }
 
+// currently is not useful, but maybe later on
 module.exports = serious;

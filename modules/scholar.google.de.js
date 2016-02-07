@@ -42,7 +42,9 @@ module.exports = {
 					var entity = {
 						title:     book.find('td.gs_title a span').html(),
 						authors:   book.find('td.gs_title .gs_authors').html().split(', '),
-						publisher: book.find('td.gs_title .gs_pub').html()
+						publisher: book.find('td.gs_title .gs_pub').html(),
+						quoted:    book.find('td.gs_num a').html(),
+						id:        query.cluster
 					};
 
 					this.save({

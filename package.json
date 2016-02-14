@@ -1,5 +1,5 @@
 {
-  "name": "crawler",
+  "name": "modcrawler",
   "version": "0.1.0",
   "description": "a crawler and or scraper based on jsdom, with dynamic module loader depending on crawled host",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/plusgut/crawler.git"
+    "url": "git+https://github.com/plusgut/crawler.git"
   },
   "author": "Carlo Jeske",
   "license": "MIT",
@@ -20,5 +20,7 @@
     "lodash": "^4.2.1",
     "mkdirp": "^0.5.1",
     "request": "^2.69.0"
-  }
+  },
+  "homepage": "https://github.com/plusgut/crawler#readme",
+  "devDependencies": {}
 }

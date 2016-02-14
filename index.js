@@ -206,11 +206,14 @@ var serious = {
 	}
 };
 
-var url = defaultModule.process.parse(process.argv, true);
+if(module.parent === null) { // Called via cli
+	var url = defaultModule.process.parse(process.argv, true);
 
-if(url) {
-	serious.crawler.init(url);
+	if(url) {
+		serious.crawler.init(url);
+	}
+} else { // Called via require
+	// currently is not useful, but maybe later on
+	lodash.merge(serious, defaultModule);
+	module.exports = serious;
 }
-
-// currently is not useful, but maybe later on
-module.exports = serious;

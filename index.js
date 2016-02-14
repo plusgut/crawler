@@ -6,7 +6,7 @@ var jsdom     = require('jsdom');
 var urlParser = require('url');
 var lodash    = require('lodash');
 
-var serious =  {
+var defaultModule =  {
 	////-----------------------------------------------------------------------------------------
 	// crawls the link and searches for others, and saves those to the cache
 	crawler: {
@@ -25,14 +25,6 @@ var serious =  {
 		////-----------------------------------------------------------------------------------------
 		// custom headers
 		headers: {
-		},
-		////-----------------------------------------------------------------------------------------
-		// Sets up the initial request and overwrites functions from the module depending of host
-		init: function(opt) {
-			this.host = opt.url.host;
-			serious.module.load(opt.url.host);
-			this.addRequest(opt.url.href, this.startContext);
-			this.load();
 		},
 		load: function() {
 			while(this.current < this.queue.length) {
@@ -200,7 +192,21 @@ var serious =  {
 	}
 };
 
-var url = serious.process.parse(process.argv, true);
+var serious = {
+	crawler: {
+		////-----------------------------------------------------------------------------------------
+		// Sets up the initial request and overwrites functions from the module depending of host
+		init: function(opt) {
+			lodash.merge(serious, defaultModule);
+			this.host = opt.url.host;
+			serious.module.load(opt.url.host);
+			this.addRequest(opt.url.href, this.startContext);
+			this.load();
+		}
+	}
+};
+
+var url = defaultModule.process.parse(process.argv, true);
 
 if(url) {
 	serious.crawler.init(url);

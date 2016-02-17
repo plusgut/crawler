@@ -34,10 +34,8 @@ var defaultModule =  {
 		////-----------------------------------------------------------------------------------------
 		// Handles requests, or takes the cached version
 		request: function() {
-			var self    = this;
-			var current = self.current;
-			var url     = urlParser.parse(this.queue[current]);
-			var cb      = serious.scraper.response.bind(serious.scraper, current, url);
+			var url     = urlParser.parse(this.queue[this.current]);
+			var cb      = serious.scraper.response.bind(serious.scraper, this.current, url);
 			var cache = serious.cache.get(url);
 			if(cache === false) {
 				var opt = {
@@ -58,7 +56,7 @@ var defaultModule =  {
 			} else {
 				jsdom.env(cache, serious.scraper.includes, cb);
 			}
-			self.current++;
+			this.current++;
 		},
 		////-----------------------------------------------------------------------------------------
 		// Checks if a url is already processed
